@@ -182,18 +182,17 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] strings) {
-            super.onPostExecute(strings);
-            List<String> weekForecast = new ArrayList<>(
-                    Arrays.asList(strings));
-
-            mForecastAdapter.clear();
-            mForecastAdapter.addAll(weekForecast);;
-            mForecastAdapter.notifyDataSetChanged();
+            if (strings != null) {
+                List<String> weekForecast = new ArrayList<>(Arrays.asList(strings));
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(weekForecast);
+            }
         }
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
              * so for convenience we're breaking it out into its own method now.
              */
+
         private String getReadableDateString(long time) {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
