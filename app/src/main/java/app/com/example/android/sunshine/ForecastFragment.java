@@ -28,7 +28,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -39,8 +38,6 @@ public class ForecastFragment extends Fragment {
 
     private String postcode = "TS185AE";
     private ArrayAdapter<String> mForecastAdapter;
-    View rootView;
-    ListView listView;
 
     public ForecastFragment() {
     }
@@ -76,49 +73,17 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        new FetchWeatherTask().execute(postcode);
-
-        String[] weatherArray = new String[7];
-        String[] dayArray = {"Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"};
-        String[] forecastArray = {"Sunny", "Foggy", "Cloudy", "Windy"};
-        Calendar calendar = Calendar.getInstance();
-        int dayNum = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        int y = dayNum;
-
-        for(int x = 0; x < weatherArray.length; x++) {
-            int farenheight = (int) (Math.random() * 100);
-            int celcius = ((farenheight - 32) / 9) * 5;
-            int forecast = (int) (Math.random() * 3);
-            String day;
-
-            if (y == dayNum) {
-                day = "Today";
-            } else if (y == dayNum + 1) {
-                day = "Tomorrow";
-                dayNum = 8;
-            } else if (y >= dayArray.length){
-                y = 0;
-                day = dayArray[y];
-            } else {
-                day = dayArray[y];
-            }
-
-            weatherArray[x] = day + " - " + forecastArray[forecast] + " - " + farenheight + " / " + celcius;
-            y++;
-        }
-
-        List<String> weekForecast = new ArrayList<>(Arrays.asList(weatherArray));
 
         mForecastAdapter = new ArrayAdapter<>(
                 getActivity(),
                 R.layout.list_item_forecast,
-                R.id.list_item_forecast_textview,
-                weekForecast);
+                R.id.list_item_forecast_textview);
 
+        new FetchWeatherTask().execute(postcode);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
+
         return rootView;
     }
 
@@ -159,8 +124,6 @@ public class ForecastFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
-
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -210,12 +173,10 @@ public class ForecastFragment extends Fragment {
             }
             try {
                 result = getWeatherDataFromJson(forecastJsonStr, numDays);
-                Log.v(LOG_TAG, "Forecast Result String:" + result);
                 return result;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.v(LOG_TAG, "Forecast JSON String:" + forecastJsonStr);
             return null;
         }
 
@@ -225,9 +186,9 @@ public class ForecastFragment extends Fragment {
             List<String> weekForecast = new ArrayList<>(
                     Arrays.asList(strings));
 
-            mForecastAdapter = new ArrayAdapter<String>(getActivity(),
-                    R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
-            listView.setAdapter(mForecastAdapter);
+            mForecastAdapter.clear();
+            mForecastAdapter.addAll(weekForecast);;
+            mForecastAdapter.notifyDataSetChanged();
         }
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
@@ -322,9 +283,6 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
             return resultStrs;
         }
     }
