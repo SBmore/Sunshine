@@ -1,12 +1,9 @@
 package app.com.example.android.sunshine;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -14,12 +11,7 @@ public class DetailActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CharSequence text = getIntent().getCharSequenceExtra(Intent.EXTRA_TEXT);
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        setContentView(R.layout.activity_detail);
     }
 
 
