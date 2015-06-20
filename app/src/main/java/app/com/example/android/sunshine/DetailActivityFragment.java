@@ -1,14 +1,13 @@
 package app.com.example.android.sunshine;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
@@ -16,7 +15,15 @@ import android.widget.Toast;
  */
 public class DetailActivityFragment extends Fragment {
 
-    private CharSequence mForecastText;
+    private String mDay;
+    private String mMonthAndDay;
+    private int mHigh;
+    private int mLow;
+    private String mDescription;
+    private int mHumidity;
+    private int mPressure;
+    private String mWind;
+
     public DetailActivityFragment() {
     }
 
@@ -25,12 +32,14 @@ public class DetailActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mForecastText = getActivity().getIntent().getCharSequenceExtra(Intent.EXTRA_TEXT);
-        Context context = getActivity().getApplication().getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, mForecastText, duration);
-        toast.show();
+        mDay = getActivity().getIntent().getStringExtra("IntentDay");
+        mMonthAndDay = getActivity().getIntent().getStringExtra("IntentMonthAndDay");
+        mHigh = getActivity().getIntent().getIntExtra("IntentHigh", 0);
+        mLow = getActivity().getIntent().getIntExtra("IntentLow", 0);
+        mDescription = getActivity().getIntent().getStringExtra("IntentDescription");
+        mHumidity = getActivity().getIntent().getIntExtra("IntentHumidity", 0);
+        mPressure = getActivity().getIntent().getIntExtra("IntentPressure", 0);
+        mWind = getActivity().getIntent().getStringExtra("IntentWind");
     }
 
     @Override
@@ -39,9 +48,28 @@ public class DetailActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        TextView textDayView = (TextView) rootView.findViewById(R.id.whatDay);
+        TextView textMonthAndDayView = (TextView) rootView.findViewById(R.id.monthAndDay);
+        TextView textHighView = (TextView) rootView.findViewById(R.id.maxTemp);
+        TextView textLowView = (TextView) rootView.findViewById(R.id.minTemp);
+        TextView textDescriptionView = (TextView) rootView.findViewById(R.id.forecast);
+        TextView textHumidityView = (TextView) rootView.findViewById(R.id.humidity);
+        TextView textPressureView = (TextView) rootView.findViewById(R.id.pressure);
+        TextView textWindView = (TextView) rootView.findViewById(R.id.wind);
+        textDayView.setText(mDay);
+        textMonthAndDayView.setText(mMonthAndDay);
+        textHighView.setText(mHigh + "");
+        textLowView.setText(mLow + "°");
+        textDescriptionView.setText(mDescription);
+        textHumidityView.setText(mHumidity + " %");
+        textPressureView.setText(mPressure + " hPa");
+        textWindView.setText(mWind);
 
-        TextView textView = (TextView) rootView.findViewById(R.id.whatDay);
-        textView.setText(mForecastText);
+        ImageView weatherImage = (ImageView) rootView.findViewById(R.id.forecastImg);
+        Context context = weatherImage.getContext();
+        int id = context.getResources().getIdentifier("art_" + mDescription.toLowerCase(), "drawable", context.getPackageName());
+        weatherImage.setImageResource(id);
+
         return rootView;
     }
 }

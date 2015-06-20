@@ -40,6 +40,15 @@ public class ForecastFragment extends Fragment {
 
     private String postcode = "TS185AE";
     private ArrayAdapter<String> mForecastAdapter;
+    private int mNumDays = 7;
+    private String[] mDayArr = new String[mNumDays];
+    private String[] mMonthAndDayArr = new String[mNumDays];
+    private int[] mHighArr = new int[mNumDays];
+    private int[] mLowArr = new int[mNumDays];
+    private String[] mDescriptionArr = new String[mNumDays];
+    private int[] mHumidityArr = new int[mNumDays];
+    private int[] mPressureArr = new int[mNumDays];
+    private String[] mWindArr = new String[mNumDays];
 
     public ForecastFragment() {
     }
@@ -89,9 +98,16 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                CharSequence forecast = mForecastAdapter.getItem(i);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, forecast);
+                intent.putExtra("IntentDay", mDayArr[i]);
+                intent.putExtra("IntentMonthAndDay", mMonthAndDayArr[i]);
+                intent.putExtra("IntentHigh", mHighArr[i]);
+                intent.putExtra("IntentLow", mLowArr[i]);
+                intent.putExtra("IntentDescription", mDescriptionArr[i]);
+                intent.putExtra("IntentHumidity", mHumidityArr[i]);
+                intent.putExtra("IntentPressure", mPressureArr[i]);
+                intent.putExtra("IntentWind", mWindArr[i]);
+
                 startActivity(intent);
             }
         });
@@ -115,7 +131,6 @@ public class ForecastFragment extends Fragment {
 
             String format = "json";
             String units = "metric";
-            int numDays = 7;
             String[] result;
 
             try {
@@ -132,7 +147,7 @@ public class ForecastFragment extends Fragment {
                         .appendQueryParameter(QUERY_PARAM, params[0])
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, units)
-                        .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                        .appendQueryParameter(DAYS_PARAM, Integer.toString(mNumDays))
                         .build();
 
                 URL url = new URL(builtUri.toString());
@@ -184,7 +199,7 @@ public class ForecastFragment extends Fragment {
                 }
             }
             try {
-                result = getWeatherDataFromJson(forecastJsonStr, numDays);
+                result = getWeatherDataFromJson(forecastJsonStr);
                 return result;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -205,10 +220,10 @@ public class ForecastFragment extends Fragment {
              * so for convenience we're breaking it out into its own method now.
              */
 
-        private String getReadableDateString(long time) {
+        private String getReadableDateString(long time, String format) {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
-            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat(format);
             return shortenedDateFormat.format(time);
         }
 
@@ -224,6 +239,45 @@ public class ForecastFragment extends Fragment {
             return highLowStr;
         }
 
+        private String windDirection(double wind, double degrees) {
+            String direction = "";
+
+            if (degrees >= 348.75 || degrees < 11.25)
+                direction = "N";
+            else if (degrees >= 11.25 && degrees < 33.75)
+                direction = "NNE";
+            else if (degrees >= 33.75 && degrees < 56.25)
+                direction = "NE";
+            else if (degrees >= 56.25 && degrees < 78.75)
+                direction = "ENE";
+            else if (degrees >= 78.75 && degrees < 101.25)
+                direction = "E";
+            else if (degrees >= 101.25 && degrees < 123.75)
+                direction = "ESE";
+            else if (degrees >= 123.75 && degrees < 146.25)
+                direction = "SE";
+            else if (degrees >= 146.25 && degrees < 168.75)
+                direction = "SSE";
+            else if (degrees >= 168.75 && degrees < 191.25)
+                direction = "S";
+            else if (degrees >= 191.25 && degrees < 213.75)
+                direction = "SSW";
+            else if (degrees >= 213.75 && degrees < 236.25)
+                direction = "SW";
+            else if (degrees >= 236.25 && degrees < 258.75)
+                direction = "WSW";
+            else if (degrees >= 258.75 && degrees < 281.25)
+                direction = "W";
+            else if (degrees >= 281.25 && degrees < 303.75)
+                direction = "WNW";
+            else if (degrees >= 303.75 && degrees < 326.25)
+                direction = "NW";
+            else if (degrees >= 326.25 && degrees < 348.75)
+                direction = "NNW";
+
+            return wind + " km/h " + direction;
+        }
+
         /**
          * Take the String representing the complete forecast in JSON Format and
          * pull out the data we need to construct the Strings needed for the wireframes.
@@ -231,7 +285,7 @@ public class ForecastFragment extends Fragment {
          * Fortunately parsing is easy:  constructor takes the JSON string and converts it
          * into an Object hierarchy for us.
          */
-        private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+        private String[] getWeatherDataFromJson(String forecastJsonStr)
                 throws JSONException {
 
             // These are the names of the JSON objects that need to be extracted.
@@ -240,7 +294,11 @@ public class ForecastFragment extends Fragment {
             final String OWM_TEMPERATURE = "temp";
             final String OWM_MAX = "max";
             final String OWM_MIN = "min";
+            final String OWM_HUMIDITY = "humidity";
+            final String OWM_PRESSURE = "pressure";
+            final String OWM_WIND = "speed";
             final String OWM_DESCRIPTION = "main";
+            final String OWM_WIND_DIRECTION = "deg";
 
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
@@ -262,11 +320,10 @@ public class ForecastFragment extends Fragment {
             // now we work exclusively in UTC
             dayTime = new Time();
 
-            String[] resultStrs = new String[numDays];
+            String[] resultStrs = new String[mNumDays];
             for (int i = 0; i < weatherArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
                 String day;
-                String description;
                 String highAndLow;
 
                 // Get the JSON object representing the day
@@ -278,20 +335,30 @@ public class ForecastFragment extends Fragment {
                 long dateTime;
                 // Cheating to convert this to UTC time, which is what we want anyhow
                 dateTime = dayTime.setJulianDay(julianStartDay + i);
-                day = getReadableDateString(dateTime);
+                day = getReadableDateString(dateTime, "EEE MMM dd");
 
                 // description is in a child array called "weather", which is 1 element long.
                 JSONObject weatherObject = dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
-                description = weatherObject.getString(OWM_DESCRIPTION);
 
                 // Temperatures are in a child object called "temp".  Try not to name variables
                 // "temp" when working with temperature.  It confuses everybody.
                 JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
-                double high = temperatureObject.getDouble(OWM_MAX);
-                double low = temperatureObject.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
-                resultStrs[i] = day + " - " + description + " - " + highAndLow;
+                Double high = new Double(Math.round(temperatureObject.getDouble(OWM_MAX)));
+                Double low = new Double(Math.round(temperatureObject.getDouble(OWM_MIN)));
+                Double pressure = new Double(Math.round(dayForecast.getDouble(OWM_PRESSURE)));
+                Double humidity = new Double(Math.round(dayForecast.getDouble(OWM_HUMIDITY)));
+                mDayArr[i] = getReadableDateString(dateTime, "EEEE");
+                mMonthAndDayArr[i] = getReadableDateString(dateTime, "MMMM dd");
+                mHighArr[i] = high.intValue();
+                mLowArr[i] = low.intValue();
+                mDescriptionArr[i] = weatherObject.getString(OWM_DESCRIPTION);
+                mHumidityArr[i] = humidity.intValue();
+                mPressureArr[i] = pressure.intValue();
+                mWindArr[i] = windDirection(Math.round(dayForecast.getDouble(OWM_WIND)),
+                        dayForecast.getDouble(OWM_WIND_DIRECTION));
+                highAndLow = formatHighLows(mHighArr[i], mLowArr[i]);
+                resultStrs[i] = day + " - " + mDescriptionArr[i] + " - " + highAndLow;
             }
 
             return resultStrs;

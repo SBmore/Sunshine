@@ -11,4 +11,7 @@
     <string name="humidity">Humidity:</string>
     <string name="pressure">Pressure:</string>
     <string name="wind">Wind:</string>
+    <string name="placeholder">Temp</string>
+    <string name="degreeSymbol">°</string>
+
 </resources>

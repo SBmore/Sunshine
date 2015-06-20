@@ -9,19 +9,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/placeholder"
         android:id="@+id/whatDay"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textSize="24sp"
         android:fontFamily="sans-serif-condensed"
-        android:textColor="#fa191919" />
+        android:textColor="@color/black" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/placeholder"
         android:id="@+id/monthAndDay"
         android:layout_below="@+id/whatDay"
         android:layout_alignParentLeft="true"
@@ -33,7 +33,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="XXo"
+        android:text="@string/placeholder"
         android:id="@+id/maxTemp"
         android:layout_below="@+id/monthAndDay"
         android:layout_alignParentLeft="true"
@@ -41,39 +41,53 @@
         android:layout_marginTop="31dp"
         android:textSize="96sp"
         android:fontFamily="sans-serif-light"
-        android:layout_marginLeft="15dp" />
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/darkGrey" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/degreeSymbol"
+        android:id="@+id/degreeSymbol"
+        android:textSize="96sp"
+        android:layout_alignTop="@+id/maxTemp"
+        android:layout_toRightOf="@+id/maxTemp"
+        android:layout_toEndOf="@+id/maxTemp"
+        android:textColor="@color/darkGrey" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/forecastImg"
-        android:layout_alignTop="@+id/maxTemp"
-        android:layout_toRightOf="@+id/maxTemp"
-        android:src="@drawable/art_clear" />
+        android:src="@drawable/art_clear"
+        android:layout_alignTop="@+id/degreeSymbol"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12"
+        android:text="@string/placeholder"
         android:id="@+id/minTemp"
-        android:layout_below="@+id/maxTemp"
-        android:layout_toLeftOf="@+id/forecastImg"
-        android:layout_toStartOf="@+id/forecastImg"
         android:fontFamily="sans-serif-light"
-        android:textSize="48sp" />
+        android:textSize="48sp"
+        android:layout_below="@+id/maxTemp"
+        android:layout_alignRight="@+id/maxTemp"
+        android:layout_alignEnd="@+id/maxTemp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/placeholder"
         android:id="@+id/forecast"
         android:fontFamily="sans-serif-condensed"
-        android:textSize="12sp"
+        android:textSize="22sp"
         android:layout_below="@+id/forecastImg"
+        android:layout_alignLeft="@+id/forecastImg"
         android:layout_alignRight="@+id/forecastImg"
         android:layout_alignEnd="@+id/forecastImg"
-        android:layout_marginRight="47dp"
-        android:layout_marginEnd="47dp" />
+        android:gravity="center"
+        android:textColor="@color/lightGrey" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -85,7 +99,8 @@
         android:layout_marginTop="30dp"
         android:layout_below="@+id/minTemp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="@color/darkGrey" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -96,7 +111,8 @@
         android:fontFamily="sans-serif-light"
         android:layout_below="@+id/humidityTitle"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="@color/darkGrey" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -107,5 +123,46 @@
         android:textSize="22sp"
         android:layout_below="@+id/pressureTitle"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="@color/darkGrey" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder"
+        android:id="@+id/humidity"
+        android:fontFamily="sans-serif-light"
+        android:textSize="22sp"
+        android:textColor="@color/darkGrey"
+        android:layout_alignTop="@+id/humidityTitle"
+        android:layout_toRightOf="@+id/humidityTitle"
+        android:layout_toEndOf="@+id/humidityTitle"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder"
+        android:id="@+id/pressure"
+        android:fontFamily="sans-serif-light"
+        android:textSize="22sp"
+        android:textColor="@color/darkGrey"
+        android:layout_alignTop="@+id/pressureTitle"
+        android:layout_toRightOf="@+id/pressureTitle"
+        android:layout_toEndOf="@+id/pressureTitle"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder"
+        android:id="@+id/wind"
+        android:fontFamily="sans-serif-light"
+        android:textSize="22sp"
+        android:textColor="@color/darkGrey"
+        android:layout_alignTop="@+id/windTitle"
+        android:layout_toRightOf="@+id/windTitle"
+        android:layout_toEndOf="@+id/windTitle"
+        android:layout_marginLeft="10dp" />
+
 </RelativeLayout>
