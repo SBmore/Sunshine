@@ -8,10 +8,13 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="humidity">Humidity:</string>
     <string name="pressure">Pressure:</string>
     <string name="wind">Wind:</string>
     <string name="placeholder">Temp</string>
     <string name="degreeSymbol">°</string>
-
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_default" translatable="false">TS185AE</string>
 </resources>
