@@ -41,6 +41,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     private String postcode;
+    private String mUnits;
     private ArrayAdapter<String> mForecastAdapter;
     private int mNumDays = 7;
     private String[] mDayArr = new String[mNumDays];
@@ -120,6 +121,7 @@ public class ForecastFragment extends Fragment {
     public void updateWeather() {
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getActivity());
         postcode = preference.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        mUnits = preference.getString(getString(R.string.pref_unit_key),getString(R.string.pref_unit_default));
         new FetchWeatherTask().execute(postcode);
     }
 
@@ -364,8 +366,13 @@ public class ForecastFragment extends Fragment {
                 Double humidity = new Double(Math.round(dayForecast.getDouble(OWM_HUMIDITY)));
                 mDayArr[i] = getReadableDateString(dateTime, "EEEE");
                 mMonthAndDayArr[i] = getReadableDateString(dateTime, "MMMM dd");
-                mHighArr[i] = high.intValue();
-                mLowArr[i] = low.intValue();
+                if (mUnits.equals("imperial")) {
+                    mHighArr[i] = convertMetricToInperial(high).intValue();
+                    mLowArr[i] = convertMetricToInperial(low).intValue();
+                } else {
+                    mHighArr[i] = high.intValue();
+                    mLowArr[i] = low.intValue();
+                }
                 mDescriptionArr[i] = weatherObject.getString(OWM_DESCRIPTION);
                 mHumidityArr[i] = humidity.intValue();
                 mPressureArr[i] = pressure.intValue();
@@ -376,6 +383,11 @@ public class ForecastFragment extends Fragment {
             }
 
             return resultStrs;
+        }
+
+        private Double convertMetricToInperial(Double unit) {
+            Double converted = ((unit / 5) * 9) + 32;
+            return converted;
         }
     }
 }

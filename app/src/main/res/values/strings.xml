@@ -17,4 +17,9 @@
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">TS185AE</string>
+    <string name="pref_unit_label">Temperature Units</string>
+    <string name="pref_unit_key">temperature units</string>
+    <string name="pref_unit_metric">Metric</string>
+    <string name="pref_unit_default">Metric</string>
+    <string name="pref_unit_imperial">Imperial</string>
 </resources>
