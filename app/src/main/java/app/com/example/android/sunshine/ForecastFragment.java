@@ -80,8 +80,10 @@ public class ForecastFragment extends Fragment {
             updateWeather();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
