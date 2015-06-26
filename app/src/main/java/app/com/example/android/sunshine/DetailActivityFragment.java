@@ -1,11 +1,15 @@
 package app.com.example.android.sunshine;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,15 +21,16 @@ import android.widget.TextView;
  */
 public class DetailActivityFragment extends Fragment {
 
-    private String mDay;
-    private String mMonthAndDay;
+    public String mDay;
+    public String mMonthAndDay;
     private int mHigh;
     private int mLow;
     private String mDescription;
     private int mHumidity;
     private int mPressure;
     private String mWind;
-
+    private ShareActionProvider mShareActionProvider;
+    private Intent mShareIntent = new Intent(Intent.ACTION_SEND);
     public DetailActivityFragment() {
     }
 
@@ -44,11 +49,33 @@ public class DetailActivityFragment extends Fragment {
         mWind = getActivity().getIntent().getStringExtra("IntentWind");
     }
 
+    // Call to update the share intent
+    private void setShareIntent(Intent shareIntent) {
+        if (mShareActionProvider != null) {
+            String concatCast = mDay + " " + mMonthAndDay + " - " + mDescription + " - " + mHigh + "  / " + mLow;
+            String forecast = concatCast + " #SunshineApp";
+            mShareIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            mShareIntent.setType("text/plain");
+            mShareIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_detail, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+//        getActivity().getMenuInflater().inflate(R.menu.menu_detail, menu);
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        setShareIntent(mShareIntent);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
