@@ -16,6 +16,11 @@
     <item name="darkGrey" type="color">#313131</item>
     <item name="lightGrey" type="color">#646464</item>
 
+    <color name="grey">#cccccc</color>
+    <color name="sunshine_light_blue">#ff64c2f4</color>
+    <color name="sunshine_blue">#ff1ca8f4</color>
+    <color name="sunshine_dark_blue">#0288D1</color>
+
     <integer-array name="androidcolors">
         <item>@color/blue</item>
         <item>@color/purple</item>
